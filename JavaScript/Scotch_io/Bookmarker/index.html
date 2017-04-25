@@ -18,15 +18,19 @@ Example from the Getting Started with JavaScript for Web Development course by C
             background: url(https://static.pexels.com/photos/173424/pexels-photo-173424.jpeg);
             background-size: cover;
         }
-        .floater  {
-          background: #FFF;
+        .content  {
           font-size: 19px;
           line-height: 1.5;
-          border-radius: 5px;
           max-width: 500px;
           margin: 0 auto;
           position: relative;
+          border-radius: 5px;
+        }
+        .floater  {
+          background: #FFF;    
           transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.4) all;
+          margin-bottom: 30px;
+          z-index: 11;
         }
         .floater input[type=text] {
           padding: 30px 20px;
@@ -53,6 +57,8 @@ Example from the Getting Started with JavaScript for Web Development course by C
           height: 100%;
           opacity: 0;
           transition: 0.3s ease opacity;
+          z-index: 10;
+          pointer-events: none;
         }
         body.show-floater .floater {
           transform: scale(1.1);
@@ -63,21 +69,53 @@ Example from the Getting Started with JavaScript for Web Development course by C
         }
         body.show-floater .overlay {
           opacity: 1;
+          pointer-events: all;
+        }
+        /* ==================== */
+        .bookmarks-list {
+          position: relative;
+          z-index: 9;
+        }
+        .bookmark {
+          display: block;
+          background: #FFF;
+          color: #999;
+          padding: 20px;
+          transition: 0.3s ease all;
+          border-bottom: 1px solid #DDD;
+          font-size: 16px;
+        }
+        .bookmark:hover   {
+          color: #1CE;
+          text-decoration: none;
+        }
+        .bookmark:first-child   {
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+        }
+        .bookmark:last-child   {
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
+          border-bottom: 0;
         }
     </style>
 </head>
 <body>
     
     <div class="overlay"></div>
-    
-    <div class="floater">
-        <div class="floater-top">
-            <input type="text" class="form-control" placeholder="What's on your mind?">
-        </div>
-        <div class="floater-bottom">
-            <button type="button" class="btn btn-primary btn-sm">Add</button>
-        </div>
+    <form class="bookmark-form">
+        <div class="floater content">
+            
+            <div class="floater-top">
+                <input type="text" class="form-control" placeholder="What's on your mind?">
+            </div>
+            <div class="floater-bottom">
+                <button type="submit" class="btn btn-primary btn-sm">Add</button>
+            </div>
+        </form>
     </div>
+    
+    <div class="bookmarks-list content"></div>
     
     <!-- start js -->
     <script>
@@ -98,6 +136,29 @@ Example from the Getting Started with JavaScript for Web Development course by C
         input.addEventListener('focusin', showFloater);
         input.addEventListener('focusout', closeFloater);
         overlay.addEventListener('click', closeFloater);
+        
+        // ===========================================
+        
+        const bookmarksList     = document.querySelector('.bookmarks-list');
+        const bookmarkForm      = document.querySelector('.bookmark-form');
+        const bookmarkInput     = bookmarkForm.querySelector('input[type=text]');
+        
+        function createBookmark(e) {
+            e.preventDefault();
+            
+            const title         = bookmarkInput.value;
+            const bookmark      = document.createElement('a');
+            bookmark.className  = 'bookmark';
+            bookmark.innerText  = title;
+            bookmark.href       = '#';
+            bookmark.target     = '_blank';
+            bookmarksList.appendChild(bookmark);
+            
+            bookmarkForm.reset();
+        }
+        
+        bookmarkForm.addEventListener('submit', createBookmark);
+        
     </script>
 </body>
 </html>
